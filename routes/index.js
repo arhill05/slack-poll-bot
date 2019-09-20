@@ -48,17 +48,18 @@ router.post('/events/polls/user-interaction', async (req, res, next) => {
 sendInteractiveResponse = async payload => {
   try {
     const responseUrl = payload.responseUrl;
-    let blocks = payload.message.blocks;
-    const replaceBlock = blocks.shift();
-    replaceBlock.text = {
-      text: replaceBlock.text += payload.actions[0].value
-    };
-    const response = {
-      replaceOriginal: true,
-      blocks: [ replaceBlock, ...blocks ]
-    };
+    //let blocks = payload.message.blocks;
+    console.log(payload);
+    // const replaceBlock = blocks.shift();
+    // replaceBlock.text = {
+    //   text: replaceBlock.text += payload.actions[0].value
+    // };
+    // const response = {
+    //   replaceOriginal: true,
+    //   blocks: [ replaceBlock, ...blocks ]
+    // };
 
-    await axios.post(responseUrl, response);
+    // await axios.post(responseUrl, response);
   } catch (err) {
     console.log(err);
   }
