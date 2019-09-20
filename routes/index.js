@@ -52,7 +52,7 @@ sendInteractiveResponse = async payload => {
     let blocks = payloadObj.message.blocks;
     const replaceBlock = blocks.shift();
     replaceBlock.text = {
-      text: (replaceBlock.text += payloadObj.actions[0].value)
+      text: (replaceBlock.text.text += payloadObj.actions[0].value)
     };
 
     blocks.push(replaceBlock);
@@ -61,9 +61,9 @@ sendInteractiveResponse = async payload => {
       blocks
     };
 
-    console.log(blocks);
+    // console.log(blocks);
 
-    // await axios.post(responseUrl, response);
+    await axios.post(responseUrl, response);
   } catch (err) {
     console.log(err);
   }
