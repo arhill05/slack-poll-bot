@@ -34,6 +34,11 @@ router.post('/events/polls/create-poll', (req, res, next) => {
   res.status(200).send(response);
 });
 
+router.post('/events/polls/user-interaction', (req, res, next) => {
+  console.log(req.body);
+  res.status(200).send();
+})
+
 getFormattedPollText = (question, entries) => {
   let result = "";
   result += `*${question}*\n\n`;
