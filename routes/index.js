@@ -56,6 +56,8 @@ sendInteractiveResponse = async payload => {
     };
 
     blocks.push(replaceBlock);
+
+    blocks = blocks.map(block => JSON.parse(block));
     const response = {
       replaceOriginal: true,
       blocks
