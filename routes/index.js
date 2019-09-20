@@ -61,9 +61,9 @@ sendInteractiveResponse = async payload => {
       blocks
     };
 
-    // console.log(blocks);
+    console.log(blocks);
 
-    await axios.post(responseUrl, response);
+    //await axios.post(responseUrl, response);
   } catch (err) {
     console.log(err);
   }
