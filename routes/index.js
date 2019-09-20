@@ -49,10 +49,10 @@ sendInteractiveResponse = async payload => {
   try {
     const payloadObj = JSON.parse(payload);
     const responseUrl = payloadObj.responseUrl;
-    let blocks = payload.message.blocks;
+    let blocks = payloadObj.message.blocks;
     const replaceBlock = blocks.shift();
     replaceBlock.text = {
-      text: replaceBlock.text += payload.actions[0].value
+      text: replaceBlock.text += payloadObj.actions[0].value
     };
     const response = {
       replaceOriginal: true,
