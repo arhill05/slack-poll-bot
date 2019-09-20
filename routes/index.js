@@ -47,10 +47,11 @@ router.post('/events/polls/user-interaction', async (req, res, next) => {
 
 sendInteractiveResponse = async payload => {
   try {
-    const responseUrl = payload.responseUrl;
+    const payloadObj = JSON.parse(payload);
+    const responseUrl = payloadObj.responseUrl;
     //let blocks = payload.message.blocks;
-    console.log(payload);
-    // console.log(payload.message);
+    //console.log(payloadObj);
+    console.log(payloadObj.message);
     //console.log(Object.keys(payload));
     // const replaceBlock = blocks.shift();
     // replaceBlock.text = {
