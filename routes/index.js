@@ -49,7 +49,8 @@ sendInteractiveResponse = async payload => {
   try {
     const responseUrl = payload.responseUrl;
     //let blocks = payload.message.blocks;
-    console.log(payload);
+    // console.log(payload);
+    console.log(payload.message);
     // const replaceBlock = blocks.shift();
     // replaceBlock.text = {
     //   text: replaceBlock.text += payload.actions[0].value
