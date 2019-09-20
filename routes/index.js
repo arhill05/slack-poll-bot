@@ -46,13 +46,17 @@ router.post('/events/polls/user-interaction', async (req, res, next) => {
 });
 
 sendInteractiveResponse = async payload => {
-  const responseUrl = payload.responseUrl;
-  const response = {
-    replaceOriginal: true,
-    text: (payload.message.text += payload.actions[0].value)
-  };
+  try {
+    const responseUrl = payload.responseUrl;
+    const response = {
+      replaceOriginal: true,
+      text: (payload.message.text += payload.actions[0].value)
+    };
 
-  await axios.post(responseUrl, response);
+    await axios.post(responseUrl, response);
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 getFormattedPollText = (question, entries) => {
