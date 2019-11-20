@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 const numWords = require('num-words');
 const axios = require('axios');
+const path = require('path');
+const config = require(path.resolve(__dirname, '../config.json'));
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -11,6 +13,14 @@ router.get('/', function (req, res, next) {
 router.post('/events/polls', (req, res, next) => {
   res.status(200).send(req.body.challenge);
 });
+
+router.get('/setup', (req, res, next) => {
+  res.redirect(302, `https://slack.com/oauth/authorize?client_id=${config.slackClientId}&scope=commands,bot`);
+})
+
+router.get('/setup/complete', (req, res, next) => {
+  res.status(200).send();
+})
 
 router.post('/events/polls/create-poll', (req, res, next) => {
   const text = req.body.text;
