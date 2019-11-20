@@ -4,6 +4,28 @@ const numWords = require('num-words');
 const axios = require('axios');
 const path = require('path');
 const config = require(path.resolve(__dirname, '../config.json'));
+const queryString = require('qs');
+const crypto = require('crypto');
+
+validateRequestSignature = request => {
+  try {
+  const timestamp = request.headers['x-slack-request-timestamp'];
+  console.log(request.rawBody)
+  console.log(timestamp);
+  const slackSignature = request.headers['x-slack-signature'];
+  const signatureString = `v0:${timestamp}:${queryString.stringify(request.body), {format: 'RFC1738'}}`;
+  const mySignature = "v0=" + crypto.createHmac('sha256', config.slackSigningSecret)
+    .update(signatureString, 'utf8')
+    .digest('hex');
+
+  console.log(mySignature);
+  console.log(slackSignature);
+  const result = crypto.timingSafeEqual(Buffer.from(mySignature, 'utf8'), Buffer.from(slackSignature, 'utf8'))
+  console.log(result);
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -23,6 +45,7 @@ router.get('/setup/complete', (req, res, next) => {
 })
 
 router.post('/events/polls/create-poll', (req, res, next) => {
+  // validateRequestSignature(req);
   const text = req.body.text;
   const entries = text
     .split('"')
