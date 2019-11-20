@@ -4,7 +4,7 @@ const numWords = require('num-words');
 const axios = require('axios');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
@@ -41,33 +41,63 @@ router.post('/events/polls/create-poll', (req, res, next) => {
 router.post('/events/polls/user-interaction', async (req, res, next) => {
   const payload = req.body.payload;
 
-  res.status(200).send();
+  res.status(200).send({deleteOriginal: true});
   await sendInteractiveResponse(payload);
 });
+
+appendUserToAction = (text, actionValue, user) => {
+  const options = text.split('\n');
+  const matchingOption = options.filter(x => x.includes(actionValue))[0];
+  let replacedOption = matchingOption;
+  if (replacedOption.includes(user.id)) {
+    replacedOption = replacedOption.replace(` <@${user.id}>`, '')
+  }
+  else {
+    replacedOption = replacedOption += ` @${user.username}`;
+  }
+  let result = text.replace(matchingOption, replacedOption);
+  return result;
+}
 
 sendInteractiveResponse = async payload => {
   try {
     const payloadObj = JSON.parse(payload);
     const responseUrl = payloadObj.response_url;
     let blocks = payloadObj.message.blocks;
-    const replaceBlock = blocks.shift();
+
+    if (payloadObj.actions[0].value === 'delete_poll') {
+      const deleteResponse = {
+        delete_original: true
+      }
+      await axios.post(responseUrl, deleteResponse);
+      return;
+    }
+
+    const replaceBlock = blocks.filter(x => x.type === 'section')[0];
+    const { user } = payloadObj;
     replaceBlock.text = {
-      text: (replaceBlock.text.text += payloadObj.actions[0].value)
-    };
+      ...replaceBlock.text,
+      text: appendUserToAction(replaceBlock.text.text, payloadObj.actions[0].value, user)
+    }
 
-    blocks.push(replaceBlock);
-
-    blocks = blocks.map(block => JSON.parse(block));
     const response = {
       replaceOriginal: true,
       blocks
     };
 
-    console.log(blocks);
-
-    //await axios.post(responseUrl, response);
+    await axios.post(responseUrl, response);
   } catch (err) {
-    console.log(err);
+    const errResponse = {
+      replaceOriginal: false,
+      text: "Something went wrong. Sorry! :("
+    };
+    if (err.response) {
+      console.log(err.response.data);
+    }
+    else {
+      console.log(err);
+    }
+    await axios.post(responseUrl, errResponse);
   }
 };
 
@@ -90,6 +120,16 @@ getActions = entries => {
     },
     value: entry
   }));
+
+  elements.push({
+    type: 'button',
+    text: {
+      type: 'plain_text',
+      text: 'Delete Poll'
+    },
+    style: 'danger',
+    value: 'delete_poll'
+  });
 
   const actionsBlock = {
     type: 'actions',
