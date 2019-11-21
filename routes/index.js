@@ -15,7 +15,7 @@ router.post('/events/polls', (req, res, next) => {
 });
 
 router.get('/setup', (req, res, next) => {
-  res.redirect(302, `https://slack.com/oauth/authorize?client_id=${config.slackClientId}&scope=commands,bot`);
+  res.redirect(302, `https://slack.com/oauth/authorize?client_id=${config.slackClientId}&scope=commands`);
 })
 
 router.get('/setup/complete', (req, res, next) => {
