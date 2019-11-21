@@ -18,8 +18,13 @@ router.get('/setup', (req, res, next) => {
   res.redirect(302, `https://slack.com/oauth/authorize?client_id=${config.slackClientId}&scope=commands`);
 })
 
-router.get('/setup/complete', (req, res, next) => {
-  res.status(200).send();
+router.get('/setup/complete', async (req, res, next) => {
+  const authResponse = await axios(`https://slack.com/api/oauth.access?code=${req.query.code}&client_id=${config.slackClientId}&client_secret=${config.slackClientSecret}`)
+  if (authResponse.data.ok) {
+    res.status(200).send('Successfully installed!');
+  } else {
+    res.status(500).send('Something went wrong during installation.');
+  }
 })
 
 router.post('/events/polls/create-poll', (req, res, next) => {
